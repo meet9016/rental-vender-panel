@@ -11,8 +11,8 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
         <div className="flex min-h-screen bg-gray-50">
             <Sidebar isOpen={sidebarOpen} onClose={toggleSidebar} />
 
-            {/* Push content when sidebar is open on desktop */}
-            <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarOpen ? "lg:ml-64" : "lg:ml-0"
+            {/* Adjust margin based on sidebar state */}
+            <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarOpen ? "lg:ml-64" : "lg:ml-20"
                 }`}>
                 <Header onMenuClick={toggleSidebar} />
 
