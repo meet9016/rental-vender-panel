@@ -84,7 +84,7 @@ export default function EcommercePage() {
             <Card title="Button Variants" subtitle="Different button styles">
                 <div className="space-y-4">
                     <div className="flex flex-wrap gap-3">
-                        <Button variant="primary">Primary</Button>
+                        <Button variant="primary" className="p-55 text-red">Primary</Button>
                         <Button variant="secondary">Secondary</Button>
                         <Button variant="danger">Danger</Button>
                         <Button variant="outline">Outline</Button>
