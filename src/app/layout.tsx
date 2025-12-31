@@ -1,4 +1,6 @@
+// app/layout.tsx
 import { LayoutProvider } from "@/components/providers/LayoutProvider";
+import { ToastProvider } from "@/components/common/ui"; // Direct import
 import { Geist, Geist_Mono } from "next/font/google";
 import type { Metadata } from "next";
 import "./globals.css";
@@ -27,9 +29,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <LayoutProvider>
-          <LayoutClient>{children}</LayoutClient>
-        </LayoutProvider>
+        <ToastProvider>
+          <LayoutProvider>
+            <LayoutClient>{children}</LayoutClient>
+          </LayoutProvider>
+        </ToastProvider>
       </body>
     </html>
   );
