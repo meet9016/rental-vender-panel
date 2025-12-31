@@ -16,6 +16,7 @@ const menu: NavItem[] = [
   {
     name: "Dashboard",
     icon: FaTachometerAlt,
+    path: "/dashboard", // Main path for when sidebar is collapsed
     subItems: [
       { name: "Analytics", path: "/dashboard" },
       { name: "Ecommerce", path: "/dashboard/ecommerce" },
@@ -29,6 +30,7 @@ const menu: NavItem[] = [
   {
     name: "Reports",
     icon: FaChartLine,
+    path: "/reports/sales", // Main path for when sidebar is collapsed
     subItems: [
       { name: "Sales Report", path: "/reports/sales" },
       { name: "User Report", path: "/reports/users" },
@@ -37,6 +39,7 @@ const menu: NavItem[] = [
   {
     name: "Tables",
     icon: FaTable,
+    path: "/tables/basic", // Main path for when sidebar is collapsed
     subItems: [
       { name: "Basic Tables", path: "/tables/basic" },
       { name: "Data Tables", path: "/tables/data" },
@@ -83,7 +86,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   // Calculate submenu height
   useEffect(() => {
-    if (openSubmenu !== null) {
+    if (openSubmenu !== null && isOpen) {
       if (subMenuRefs.current[openSubmenu]) {
         setSubMenuHeight((prevHeights) => ({
           ...prevHeights,
@@ -91,9 +94,11 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         }));
       }
     }
-  }, [openSubmenu]);
+  }, [openSubmenu, isOpen]);
 
-  const handleSubmenuToggle = (index: number) => {
+  const handleSubmenuToggle = (e: React.MouseEvent, index: number) => {
+    e.preventDefault();
+    e.stopPropagation();
     setOpenSubmenu((prev) => (prev === index ? null : index));
   };
 
@@ -162,37 +167,35 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             const hasSubmenu = item.subItems && item.subItems.length > 0;
             const isItemActive = item.path ? isActive(item.path) : false;
             const isSubmenuOpen = openSubmenu === index;
+            const isAnySubitemActive = hasSubmenu && item.subItems?.some(sub => isActive(sub.path));
 
             return (
               <div key={item.name}>
                 {/* Main Menu Item */}
-                {hasSubmenu ? (
+                {hasSubmenu && isOpen ? (
+                  // When sidebar is open and has submenu - show button
                   <button
-                    onClick={() => isOpen && handleSubmenuToggle(index)}
-                    title={!isOpen ? item.name : undefined}
-                    className={`w-full flex items-center rounded-lg transition-all ${isOpen ? "gap-3 px-4 py-3" : "lg:justify-center lg:p-3"
-                      } ${isSubmenuOpen
+                    onClick={(e) => handleSubmenuToggle(e, index)}
+                    title={item.name}
+                    className={`w-full flex items-center rounded-lg transition-all gap-3 px-4 py-3 ${isSubmenuOpen || isAnySubitemActive
                         ? "bg-blue-50 text-blue-600 font-medium"
                         : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                       }`}
                   >
                     <Icon className="w-5 h-5 flex-shrink-0" />
-                    <span className={`flex-1 text-left ${isOpen ? "block" : "lg:hidden"}`}>
-                      {item.name}
-                    </span>
-                    {isOpen && (
-                      <FaChevronDown
-                        className={`w-4 h-4 transition-transform duration-200 ${isSubmenuOpen ? "rotate-180" : ""
-                          }`}
-                      />
-                    )}
+                    <span className="flex-1 text-left">{item.name}</span>
+                    <FaChevronDown
+                      className={`w-4 h-4 transition-transform duration-200 ${isSubmenuOpen ? "rotate-180" : ""
+                        }`}
+                    />
                   </button>
                 ) : (
+                  // When sidebar is collapsed or no submenu - show link
                   <Link
                     href={item.path!}
                     title={!isOpen ? item.name : undefined}
                     className={`flex items-center rounded-lg transition-all ${isOpen ? "gap-3 px-4 py-3" : "lg:justify-center lg:p-3"
-                      } ${isItemActive
+                      } ${isItemActive || isAnySubitemActive
                         ? "bg-blue-50 text-blue-600 font-medium"
                         : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                       }`}
