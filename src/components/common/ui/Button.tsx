@@ -1,14 +1,33 @@
-// components/ui/Button.tsx
+// components/ui/CommonButton.tsx
 import { ButtonHTMLAttributes, forwardRef } from "react";
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: "primary" | "secondary" | "danger" | "success" | "outline" | "ghost";
-    size?: "sm" | "md" | "lg";
+interface CommonButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+    // Variants
+    variant?: "primary" | "secondary" | "outline" | "danger" | "ghost";
+
+    // Size
+    size?: "xs" | "sm" | "md" | "lg" | "xl";
     fullWidth?: boolean;
+
+    // Loading State
     isLoading?: boolean;
+    loadingText?: string;
+
+    // Icon Support
+    leftIcon?: React.ReactNode;
+    rightIcon?: React.ReactNode;
+
+    // Accessibility
+    ariaLabel?: string;
+
+    // Custom Styling
+    fontSize?: number;
+    fontWeight?: number | string;
+    pxClass?: string;
+    pyClass?: string;
 }
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+const Button = forwardRef<HTMLButtonElement, CommonButtonProps>(
     (
         {
             children,
@@ -16,8 +35,17 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             size = "md",
             fullWidth = false,
             isLoading = false,
+            loadingText,
+            leftIcon,
+            rightIcon,
+            ariaLabel,
+            fontSize,
+            fontWeight,
             disabled,
             className = "",
+            pxClass,
+            pyClass,
+            type = "button",
             ...props
         },
         ref
@@ -32,8 +60,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 "bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500 active:bg-gray-800",
             danger:
                 "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 active:bg-red-800",
-            success:
-                "bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 active:bg-green-800",
             outline:
                 "bg-transparent border-2 border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-gray-500",
             ghost:
@@ -41,18 +67,45 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         };
 
         const sizes = {
-            sm: "px-3 py-1.5 text-sm",
-            md: "px-4 py-2 text-sm",
-            lg: "px-6 py-3 text-base",
+            xs: "text-xs",
+            sm: "text-sm",
+            md: "text-sm",
+            lg: "text-base",
+            xl: "text-lg",
+        };
+
+        // Default padding per size (can be overridden)
+        const defaultPadding = {
+            xs: pxClass || "px-2",
+            sm: pxClass || "px-3",
+            md: pxClass || "px-4",
+            lg: pxClass || "px-6",
+            xl: pxClass || "px-8",
+        };
+
+        const defaultPaddingY = {
+            xs: pyClass || "py-1",
+            sm: pyClass || "py-1.5",
+            md: pyClass || "py-2",
+            lg: pyClass || "py-3",
+            xl: pyClass || "py-4",
         };
 
         const widthClass = fullWidth ? "w-full" : "";
+        const customFontSize = fontSize ? { fontSize: `${fontSize}px` } : {};
+        const customFontWeight = fontWeight ? { fontWeight } : {};
+
+        const isDisabled = disabled || isLoading;
+        const displayText = isLoading && loadingText ? loadingText : children;
 
         return (
             <button
                 ref={ref}
-                disabled={disabled || isLoading}
-                className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${widthClass} ${className}`}
+                type={type}
+                disabled={isDisabled}
+                aria-label={ariaLabel}
+                className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${defaultPadding[size]} ${defaultPaddingY[size]} ${widthClass} ${className}`}
+                style={{ ...customFontSize, ...customFontWeight }}
                 {...props}
             >
                 {isLoading && (
@@ -77,7 +130,16 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                         />
                     </svg>
                 )}
-                {children}
+
+                {!isLoading && leftIcon && (
+                    <span className="mr-2 inline-flex items-center">{leftIcon}</span>
+                )}
+
+                {displayText}
+
+                {!isLoading && rightIcon && (
+                    <span className="ml-2 inline-flex items-center">{rightIcon}</span>
+                )}
             </button>
         );
     }

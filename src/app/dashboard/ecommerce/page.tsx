@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { FaSearch, FaUser } from "react-icons/fa";
+import { FaSearch, FaUser, FaPlus, FaSave, FaTrash, FaArrowRight, FaEdit } from "react-icons/fa";
 import {
     Button,
     Input,
@@ -33,6 +33,7 @@ export default function EcommercePage() {
     const [selectValue, setSelectValue] = useState("");
     const [radioValue, setRadioValue] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
 
     const selectOptions: SelectOption[] = [
         { value: "option1", label: "Option 1" },
@@ -67,30 +68,143 @@ export default function EcommercePage() {
         setTimeout(() => setIsLoading(false), 3000);
     };
 
+    const handleSave = () => {
+        setIsSaving(true);
+        setTimeout(() => {
+            setIsSaving(false);
+            showToast("success", "Saved successfully!");
+        }, 2000);
+    };
+
     return (
         <div className="p-6 max-w-7xl mx-auto space-y-8">
             <h1 className="text-3xl font-bold text-gray-800 mb-8">Components Demo</h1>
 
-            {/* Buttons */}
-            <Card title="Buttons" subtitle="Different button variants and sizes">
+            {/* Buttons - Basic Variants */}
+            <Card title="Button Variants" subtitle="Different button styles">
                 <div className="space-y-4">
                     <div className="flex flex-wrap gap-3">
                         <Button variant="primary">Primary</Button>
                         <Button variant="secondary">Secondary</Button>
                         <Button variant="danger">Danger</Button>
-                        <Button variant="success">Success</Button>
                         <Button variant="outline">Outline</Button>
                         <Button variant="ghost">Ghost</Button>
                     </div>
+                </div>
+            </Card>
+
+            {/* Buttons - Sizes */}
+            <Card title="Button Sizes" subtitle="From extra small to extra large">
+                <div className="flex flex-wrap items-center gap-3">
+                    <Button size="xs">Extra Small</Button>
+                    <Button size="sm">Small</Button>
+                    <Button size="md">Medium</Button>
+                    <Button size="lg">Large</Button>
+                    <Button size="xl">Extra Large</Button>
+                </div>
+            </Card>
+
+            {/* Buttons - With Icons */}
+            <Card title="Buttons with Icons" subtitle="Left and right icon placement">
+                <div className="space-y-4">
                     <div className="flex flex-wrap gap-3">
-                        <Button size="sm">Small</Button>
-                        <Button size="md">Medium</Button>
-                        <Button size="lg">Large</Button>
+                        <Button variant="primary" leftIcon={<FaPlus />}>
+                            Add User
+                        </Button>
+                        <Button variant="secondary" leftIcon={<FaSave />}>
+                            Save
+                        </Button>
+                        <Button variant="danger" leftIcon={<FaTrash />}>
+                            Delete
+                        </Button>
+                        <Button variant="outline" rightIcon={<FaArrowRight />}>
+                            Next
+                        </Button>
                     </div>
+                </div>
+            </Card>
+
+            {/* Buttons - Loading States */}
+            <Card title="Loading States" subtitle="Buttons with loading indicators">
+                <div className="space-y-4">
                     <div className="flex flex-wrap gap-3">
-                        <Button isLoading>Loading</Button>
-                        <Button disabled>Disabled</Button>
+                        <Button isLoading>Loading...</Button>
+                        <Button variant="secondary" isLoading loadingText="Saving...">
+                            Save
+                        </Button>
+                        <Button variant="danger" isLoading loadingText="Deleting...">
+                            Delete
+                        </Button>
+                        <Button variant="primary" isLoading={isSaving} onClick={handleSave}>
+                            {isSaving ? "Saving..." : "Save Changes"}
+                        </Button>
                     </div>
+                </div>
+            </Card>
+
+            {/* Buttons - States */}
+            <Card title="Button States" subtitle="Disabled and active states">
+                <div className="flex flex-wrap gap-3">
+                    <Button disabled>Disabled</Button>
+                    <Button variant="danger" disabled>Disabled Danger</Button>
+                    <Button variant="outline" disabled>Disabled Outline</Button>
+                </div>
+            </Card>
+
+            {/* Buttons - Icon Only */}
+            <Card title="Icon-Only Buttons" subtitle="Buttons with only icons (with aria-label for accessibility)">
+                <div className="flex flex-wrap gap-3">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        ariaLabel="Edit"
+                        pxClass="px-2"
+                    >
+                        <FaEdit />
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        ariaLabel="Delete"
+                        pxClass="px-2"
+                    >
+                        <FaTrash />
+                    </Button>
+                    <Button
+                        variant="primary"
+                        size="md"
+                        ariaLabel="Add"
+                        pxClass="px-3"
+                    >
+                        <FaPlus />
+                    </Button>
+                </div>
+            </Card>
+
+            {/* Buttons - Full Width */}
+            <Card title="Full Width Buttons" subtitle="Buttons that span the container width">
+                <div className="space-y-3 max-w-md">
+                    <Button fullWidth variant="primary">
+                        Full Width Primary
+                    </Button>
+                    <Button fullWidth variant="outline">
+                        Full Width Outline
+                    </Button>
+                </div>
+            </Card>
+
+            {/* Buttons - Custom Styling */}
+            <Card title="Custom Styled Buttons" subtitle="Custom font size, weight, and padding">
+                <div className="flex flex-wrap gap-3">
+                    <Button fontSize={18} fontWeight="bold">
+                        Custom Font
+                    </Button>
+                    <Button pxClass="px-8" pyClass="py-4">
+                        Custom Padding
+                    </Button>
+                    <Button className="bg-purple-600 hover:bg-purple-700">
+                        Custom Color
+                    </Button>
                 </div>
             </Card>
 
