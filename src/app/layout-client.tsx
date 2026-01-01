@@ -11,13 +11,14 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
         <div className="flex min-h-screen bg-gray-50">
             <Sidebar isOpen={sidebarOpen} onClose={toggleSidebar} />
 
-            {/* Adjust margin based on sidebar state */}
-            <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarOpen ? "lg:ml-64" : "lg:ml-20"
+            {/* Main content area - sidebar pushes it on desktop, overlays on mobile */}
+            <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${sidebarOpen ? "lg:ml-64" : "lg:ml-20"
                 }`}>
                 <Header onMenuClick={toggleSidebar} />
 
-                <main className="flex-1 p-6">
-                    <div className="max-w-7xl mx-auto">
+                <main className="flex-1 overflow-x-hidden">
+                    {/* Remove max-w constraint to use full available width */}
+                    <div className="w-full">
                         {children}
                     </div>
                 </main>
