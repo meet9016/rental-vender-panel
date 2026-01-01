@@ -647,18 +647,6 @@ export default function ComponentsDemo() {
                         </div>
                     </div>
 
-                    {/* Dark Mode */}
-                    <div className="space-y-3">
-                        <h3 className="font-semibold text-gray-700">Dark Mode Support</h3>
-                        <div className="bg-gray-900 p-6 rounded-lg">
-                            <div className="flex gap-8">
-                                <Loader type="spinner" darkMode />
-                                <Loader type="dots" darkMode />
-                                <Loader type="bars" darkMode />
-                            </div>
-                        </div>
-                    </div>
-
                     {/* Fullscreen Demo */}
                     <div className="space-y-3">
                         <h3 className="font-semibold text-gray-700">Fullscreen & Blocking</h3>
@@ -1094,18 +1082,6 @@ export default function ComponentsDemo() {
                                     allowViewSwitch
                                     clearable
                                 />
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Dark Mode</label>
-                                <div className="bg-gray-900 p-4 rounded">
-                                    <DatePicker
-                                        selectionMode="single"
-                                        placeholder="Dark mode picker"
-                                        darkMode
-                                        clearable
-                                    />
-                                </div>
                             </div>
                         </div>
                     </div>

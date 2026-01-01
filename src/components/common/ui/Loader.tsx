@@ -43,9 +43,6 @@ interface LoaderProps {
     ariaLabel?: string;
     srText?: string;
 
-    // Theme
-    darkMode?: boolean;
-
     // Additional
     className?: string;
 }
@@ -70,7 +67,6 @@ export default function Loader({
     delayMs = 0,
     ariaLabel,
     srText,
-    darkMode = false,
     className = '',
 }: LoaderProps) {
     const [isVisible, setIsVisible] = useState(delayMs === 0);
@@ -96,17 +92,17 @@ export default function Loader({
 
     // Color mappings
     const colorClasses = {
-        primary: darkMode ? 'border-blue-400' : 'border-blue-600',
-        secondary: darkMode ? 'border-gray-400' : 'border-gray-600',
-        danger: darkMode ? 'border-red-400' : 'border-red-600',
+        primary: 'border-blue-400',
+        secondary: 'border-gray-400',
+        danger: 'border-red-400',
         white: 'border-white',
         inherit: 'border-current',
     };
 
     const bgColorClasses = {
-        primary: darkMode ? 'bg-blue-400' : 'bg-blue-600',
-        secondary: darkMode ? 'bg-gray-400' : 'bg-gray-600',
-        danger: darkMode ? 'bg-red-400' : 'bg-red-600',
+        primary: 'bg-blue-400',
+        secondary: 'bg-gray-400',
+        danger: 'bg-red-400',
         white: 'bg-white',
         inherit: 'bg-current',
     };
@@ -220,7 +216,7 @@ export default function Loader({
                 const isDeterminate = value !== undefined;
                 return (
                     <div className="w-full max-w-md" role="status" aria-busy="true" aria-label={ariaLabel || 'Loading'}>
-                        <div className={`w-full ${sizeClasses[size].bar} bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden`}>
+                        <div className={`w-full ${sizeClasses[size].bar} bg-gray-200 rounded-full overflow-hidden`}>
                             {isDeterminate ? (
                                 <div
                                     className={`h-full ${customColor ? '' : bgColorClasses[color]} transition-all duration-300 ease-out rounded-full`}
@@ -243,7 +239,7 @@ export default function Loader({
                             )}
                         </div>
                         {isDeterminate && showPercentage && (
-                            <p className="text-sm text-center mt-2 text-gray-600 dark:text-gray-400 font-medium">
+                            <p className="text-sm text-center mt-2 text-gray-600  font-medium">
                                 {percentage}%
                             </p>
                         )}
@@ -253,9 +249,9 @@ export default function Loader({
             case 'skeleton':
                 return (
                     <div className="w-full space-y-3 animate-pulse" role="status" aria-busy="true" aria-label={ariaLabel || 'Loading content'}>
-                        <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-3/4"></div>
-                        <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-1/2"></div>
-                        <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-5/6"></div>
+                        <div className="h-4 bg-gray-300  rounded w-3/4"></div>
+                        <div className="h-4 bg-gray-300  rounded w-1/2"></div>
+                        <div className="h-4 bg-gray-300  rounded w-5/6"></div>
                     </div>
                 );
 
@@ -281,14 +277,14 @@ export default function Loader({
         <div className={`flex flex-col items-center gap-3 ${className}`}>
             {renderLoader()}
             {text && (
-                <p className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                <p className={`text-sm font-medium text-gray-300 `}>
                     {text}
                 </p>
             )}
             {multilineText && multilineText.length > 0 && (
                 <div className="text-center space-y-1">
                     {multilineText.map((line, idx) => (
-                        <p key={idx} className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                        <p key={idx} className={`text-sm text-gray-400'`}>
                             {line}
                         </p>
                     ))}
@@ -314,9 +310,7 @@ export default function Loader({
                 className={`fixed inset-0 z-50 flex items-center justify-center ${blocking ? 'pointer-events-auto' : 'pointer-events-none'
                     }`}
                 style={{
-                    backgroundColor: darkMode
-                        ? `rgba(17, 24, 39, ${backdropOpacity / 100})`
-                        : `rgba(255, 255, 255, ${backdropOpacity / 100})`,
+                    backgroundColor: `rgba(17, 24, 39, ${backdropOpacity / 100})`
                 }}
             >
                 <div className="pointer-events-none">{loaderContent}</div>
@@ -332,9 +326,7 @@ export default function Loader({
                     }`}
                 style={{
                     backgroundColor: blocking
-                        ? darkMode
-                            ? `rgba(17, 24, 39, ${backdropOpacity / 100})`
-                            : `rgba(255, 255, 255, ${backdropOpacity / 100})`
+                        ? `rgba(17, 24, 39, ${backdropOpacity / 100})`
                         : 'transparent',
                 }}
             >
