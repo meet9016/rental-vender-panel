@@ -1,12 +1,35 @@
 // components/ui/index.ts
+
+// Button
 export { default as Button } from "./Button";
+
+// Input
 export { default as Input } from "./Input";
-export { default as Textarea } from "./Textarea";
+
+// Select
 export { default as Select } from "./Select";
-export type { SelectOption } from "./Select";
+export type { SelectOption, SelectGroupOption } from "./Select";
+
+// Badge & Card
+export { Badge } from "./Badge";
+export { Card } from "./Badge";
+
+// Checkbox
+export {  Checkbox } from "./Checkbox";
+export { CheckboxGroup } from "./Checkbox";
+
+// Radio
+export {  Radio } from "./Checkbox";
+export { RadioGroup } from "./Checkbox";
+
+// Modal
 export { default as Modal } from "./Modal";
+
+// Toast
 export { ToastProvider, useToast } from "./Toast";
+
+// Loader
 export { default as Loader } from "./Loader";
-export { Checkbox, Radio, RadioGroup } from "./Checkbox";
-export { default as Table } from "./Table";
-export { Badge, Card } from "./Badge";
+
+// Table
+// export { default as Table } from "./Table";

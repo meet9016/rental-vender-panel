@@ -1,4 +1,4 @@
-// components/ui/CommonButton.tsx
+// components/ui/Button.tsx
 import { ButtonHTMLAttributes, forwardRef } from "react";
 
 interface CommonButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

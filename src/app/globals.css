@@ -76,3 +76,17 @@ body {
     animation: slideInRight 0.3s ease-out;
   }
 }
+
+@keyframes slide {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  50% {
+    transform: translateX(250%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
