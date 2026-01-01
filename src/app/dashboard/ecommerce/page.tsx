@@ -9,6 +9,7 @@ import {
     Select,
     Modal,
     useToast,
+    DatePicker,
     Loader,
     Checkbox,
     CheckboxGroup,
@@ -46,6 +47,11 @@ export default function ComponentsDemo() {
     const [modalLoading, setModalLoading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
     const [isUploading, setIsUploading] = useState(false);
+    const [singleDate, setSingleDate] = useState<Date | null>(null);
+    const [multipleDates, setMultipleDates] = useState<Date[]>([]);
+    const [dateRange, setDateRange] = useState<DateRange>({ start: null, end: null });
+    const [weekDate, setWeekDate] = useState<Date[]>([]);
+    const [monthDate, setMonthDate] = useState<Date | null>(null);
 
     const selectOptions: SelectOption[] = [
         { value: "option1", label: "Option 1" },
@@ -93,7 +99,7 @@ export default function ComponentsDemo() {
         { value: "other", label: "Other" },
     ];
 
-    
+
 
     useEffect(() => {
         if (selectedItems.length === 0) setSelectAllState("none");
@@ -660,7 +666,7 @@ export default function ComponentsDemo() {
                             setTimeout(() => {
                                 setIsLoading(false);
                                 const duration = Date.now() - start;
-                                toast.info(`Request completed in ${ duration }ms`);
+                                toast.info(`Request completed in ${duration}ms`);
                             }, Math.random() * 2000 + 500);
                         }}>
                             Test Delayed Loader
@@ -822,6 +828,285 @@ export default function ComponentsDemo() {
                     <Button fullWidth variant="outline" onClick={closeModal} className="text-white border-white hover:bg-white/10">Close</Button>
                 </Modal.Footer>
             </Modal>
+
+            {/* DatePicker */}
+            <Card title="DatePicker Components" subtitle="Date selection with various modes and features">
+                <div className="space-y-8">
+                    {/* Basic Selection Modes */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Selection Modes</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Single Date</label>
+                                <DatePicker
+                                    selectionMode="single"
+                                    placeholder="Select a date"
+                                    value={singleDate}
+                                    onChange={(val) => setSingleDate(val as Date)}
+                                    clearable
+                                />
+                                {singleDate && (
+                                    <p className="text-xs text-gray-600 mt-1">Selected: {singleDate.toDateString()}</p>
+                                )}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Date Range</label>
+                                <DatePicker
+                                    selectionMode="range"
+                                    placeholder="Select date range"
+                                    value={dateRange}
+                                    onChange={(val) => setDateRange(val as DateRange)}
+                                    showRangeHover
+                                    autoSwapRange
+                                    clearable
+                                />
+                                {dateRange.start && dateRange.end && (
+                                    <p className="text-xs text-gray-600 mt-1">
+                                        {dateRange.start.toDateString()} - {dateRange.end.toDateString()}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Multiple Dates</label>
+                                <DatePicker
+                                    selectionMode="multiple"
+                                    placeholder="Select multiple dates"
+                                    value={multipleDates}
+                                    onChange={(val) => setMultipleDates(val as Date[])}
+                                    maxSelectableDates={5}
+                                    clearable
+                                />
+                                {multipleDates.length > 0 && (
+                                    <p className="text-xs text-gray-600 mt-1">
+                                        Selected {multipleDates.length} date(s)
+                                    </p>
+                                )}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Week Selection</label>
+                                <DatePicker
+                                    selectionMode="week"
+                                    placeholder="Select a week"
+                                    value={weekDate}
+                                    onChange={(val) => setWeekDate(val as Date[])}
+                                    clearable
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Month Selection</label>
+                                <DatePicker
+                                    selectionMode="month"
+                                    placeholder="Select a month"
+                                    defaultView="month"
+                                    value={monthDate}
+                                    onChange={(val) => setMonthDate(val as Date)}
+                                    clearable
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Constraints & Validation */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Constraints & Validation</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Disable Past Dates</label>
+                                <DatePicker
+                                    selectionMode="single"
+                                    placeholder="Future dates only"
+                                    disablePast
+                                    clearable
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Disable Weekends</label>
+                                <DatePicker
+                                    selectionMode="single"
+                                    placeholder="Weekdays only"
+                                    disabledDates={{ weekends: true }}
+                                    clearable
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Min/Max Range (Next 30 Days)</label>
+                                <DatePicker
+                                    selectionMode="single"
+                                    placeholder="Next 30 days only"
+                                    minDate={new Date()}
+                                    maxDate={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)}
+                                    clearable
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Required Field</label>
+                                <DatePicker
+                                    selectionMode="single"
+                                    placeholder="Required field"
+                                    required
+                                    error="This field is required"
+                                    clearable
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Quick Presets */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Quick Presets</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">With Date Presets</label>
+                                <DatePicker
+                                    selectionMode="range"
+                                    placeholder="Select or use preset"
+                                    presets={[
+                                        {
+                                            label: 'Today',
+                                            getValue: () => ({ start: new Date(), end: new Date() })
+                                        },
+                                        {
+                                            label: 'Last 7 Days',
+                                            getValue: () => ({
+                                                start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+                                                end: new Date()
+                                            })
+                                        },
+                                        {
+                                            label: 'Last 30 Days',
+                                            getValue: () => ({
+                                                start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+                                                end: new Date()
+                                            })
+                                        },
+                                        {
+                                            label: 'This Month',
+                                            getValue: () => ({
+                                                start: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+                                                end: new Date()
+                                            })
+                                        },
+                                    ]}
+                                    clearable
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* States & Variants */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">States & Variants</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Read Only</label>
+                                <DatePicker
+                                    selectionMode="single"
+                                    placeholder="Read only"
+                                    value={new Date()}
+                                    readOnly
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Disabled</label>
+                                <DatePicker
+                                    selectionMode="single"
+                                    placeholder="Disabled"
+                                    disabled
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Custom Format (DD/MM/YYYY)</label>
+                                <DatePicker
+                                    selectionMode="single"
+                                    placeholder="DD/MM/YYYY"
+                                    customFormat="DD/MM/YYYY"
+                                    clearable
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">With Today Button</label>
+                                <DatePicker
+                                    selectionMode="single"
+                                    placeholder="Select date"
+                                    showTodayButton
+                                    showResetButton
+                                    clearable
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Inline Calendar */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Inline Calendar (Always Open)</h3>
+                        <div className="max-w-md">
+                            <DatePicker
+                                selectionMode="single"
+                                inline
+                                highlightToday
+                                showTodayButton
+                            />
+                        </div>
+                    </div>
+
+                    {/* Advanced Features */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Advanced Features</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">View Switching (Day ↔ Month ↔ Year)</label>
+                                <DatePicker
+                                    selectionMode="single"
+                                    placeholder="Click month/year to switch views"
+                                    allowViewSwitch
+                                    clearable
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Dark Mode</label>
+                                <div className="bg-gray-900 p-4 rounded">
+                                    <DatePicker
+                                        selectionMode="single"
+                                        placeholder="Dark mode picker"
+                                        darkMode
+                                        clearable
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Callbacks Demo */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Event Callbacks</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">With Event Handlers</label>
+                                <DatePicker
+                                    selectionMode="single"
+                                    placeholder="Select date"
+                                    onChange={(date) => toast.info(`Date changed: ${date ? (date as Date).toDateString() : 'cleared'}`)}
+                                    onOpen={() => toast.info("Calendar opened")}
+                                    onClose={() => toast.info("Calendar closed")}
+                                    onClear={() => toast.info("Date cleared")}
+                                    clearable
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Card>
         </div>
     );
 }

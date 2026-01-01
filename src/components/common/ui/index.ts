@@ -15,11 +15,11 @@ export { Badge } from "./Badge";
 export { Card } from "./Badge";
 
 // Checkbox
-export {  Checkbox } from "./Checkbox";
+export { Checkbox } from "./Checkbox";
 export { CheckboxGroup } from "./Checkbox";
 
 // Radio
-export {  Radio } from "./Checkbox";
+export { Radio } from "./Checkbox";
 export { RadioGroup } from "./Checkbox";
 
 // Modal
@@ -30,6 +30,9 @@ export { ToastProvider, useToast } from "./Toast";
 
 // Loader
 export { default as Loader } from "./Loader";
+
+export { default as DatePicker } from "./Datepicker";
+
 
 // Table
 // export { default as Table } from "./Table";
