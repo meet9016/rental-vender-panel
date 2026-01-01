@@ -32,6 +32,12 @@ export { ToastProvider, useToast } from "./Toast";
 export { default as Loader } from "./Loader";
 
 export { default as DatePicker } from "./Datepicker";
+export type { DateRange } from "./Datepicker";
+
+
+export { default as TextEditor } from "./TextEditor";
+
+export { default as ImageUpload } from "./ImageUpload";
 
 
 // Table

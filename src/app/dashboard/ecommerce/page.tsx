@@ -17,7 +17,11 @@ import {
     RadioGroup,
     Badge,
     Card,
+    TextEditor,
+    ImageUpload
 } from "@/components/common/ui";
+import type { UploadedImage } from "@/components/common/ui/ImageUpload";
+import type { DateRange } from "@/components/common/ui/Datepicker";
 import type { SelectOption } from "@/components/common/ui";
 
 const sampleData = [
@@ -52,6 +56,13 @@ export default function ComponentsDemo() {
     const [dateRange, setDateRange] = useState<DateRange>({ start: null, end: null });
     const [weekDate, setWeekDate] = useState<Date[]>([]);
     const [monthDate, setMonthDate] = useState<Date | null>(null);
+    const [editorContent, setEditorContent] = useState("");
+    const [simpleEditorContent, setSimpleEditorContent] = useState("");
+    const [markdownContent, setMarkdownContent] = useState("");
+    const [profileImage, setProfileImage] = useState<UploadedImage[]>([]);
+    const [galleryImages, setGalleryImages] = useState<UploadedImage[]>([]);
+    const [productImages, setProductImages] = useState<UploadedImage[]>([]);
+    const [bannerImage, setBannerImage] = useState<UploadedImage[]>([]);
 
     const selectOptions: SelectOption[] = [
         { value: "option1", label: "Option 1" },
@@ -99,6 +110,18 @@ export default function ComponentsDemo() {
         { value: "other", label: "Other" },
     ];
 
+    const mockUpload = async (file: File): Promise<string> => {
+        // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Simulate random upload success/failure
+        if (Math.random() > 0.9) {
+            throw new Error('Upload failed - network error');
+        }
+
+        // Return mock URL
+        return `https://images.example.com/${file.name}`;
+    };
 
 
     useEffect(() => {
@@ -1024,7 +1047,7 @@ export default function ComponentsDemo() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Custom Format (DD/MM/YYYY)</label>
+                                <label className="block text-sm font-medium text-gray-900 mb-2">Custom Format (DD/MM/YYYY)</label>
                                 <DatePicker
                                     selectionMode="single"
                                     placeholder="DD/MM/YYYY"
@@ -1104,6 +1127,442 @@ export default function ComponentsDemo() {
                                 />
                             </div>
                         </div>
+                    </div>
+                </div>
+            </Card>
+
+            {/* Text Editor */}
+            <Card title="Text Editor" subtitle="Rich text editing with multiple modes and features">
+                <div className="space-y-8">
+                    {/* Basic Rich Editor */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Rich Text Editor</h3>
+                        <TextEditor
+                            mode="rich"
+                            value={editorContent}
+                            onChange={(value) => {
+                                setEditorContent(value);
+                                console.log("Editor content:", value);
+                            }}
+                            placeholder="Start typing your content here..."
+                            minHeight={200}
+                            showCharCount
+                            showWordCount
+                            validation={{ maxLength: 5000 }}
+                        />
+                    </div>
+
+                    {/* Preset Examples */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Preset Configurations</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Simple Editor</label>
+                                <TextEditor
+                                    preset="simple"
+                                    value={simpleEditorContent}
+                                    onChange={(value) => setSimpleEditorContent(value)}
+                                    placeholder="Simple editor with basic formatting..."
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Comment Editor</label>
+                                <TextEditor
+                                    preset="comment"
+                                    placeholder="Leave a comment..."
+                                    showCharCount
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Markdown Mode */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Markdown Mode</h3>
+                        <TextEditor
+                            preset="markdown"
+                            value={markdownContent}
+                            onChange={(value) => setMarkdownContent(value)}
+                            placeholder="Write markdown here..."
+                            showCharCount
+                        />
+                    </div>
+
+                    {/* Editor States */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Editor States</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Read Only</label>
+                                <TextEditor
+                                    mode="readonly"
+                                    defaultValue="<p>This content is <strong>read-only</strong> and cannot be edited.</p>"
+                                    minHeight={100}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Disabled</label>
+                                <TextEditor
+                                    disabled
+                                    defaultValue="<p>This editor is disabled.</p>"
+                                    minHeight={100}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* With Validation */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">With Validation</h3>
+                        <TextEditor
+                            placeholder="Max 500 characters..."
+                            validation={{ maxLength: 500, required: true }}
+                            error="This field is required and must be under 500 characters"
+                            showCharCount
+                            minHeight={150}
+                        />
+                    </div>
+
+                    {/* Email Template */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Email Template Editor</h3>
+                        <TextEditor
+                            preset="email"
+                            placeholder="Compose your email..."
+                            fileUpload={{
+                                enabled: true,
+                                maxSize: 5 * 1024 * 1024, // 5MB
+                                allowedTypes: ['image/jpeg', 'image/png', 'image/gif'],
+                                onUpload: async (file) => {
+                                    // Simulate file upload
+                                    toast.info(`Uploading ${file.name}...`);
+                                    await new Promise(resolve => setTimeout(resolve, 1500));
+                                    toast.success("Image uploaded!");
+                                    // Return a placeholder image URL
+                                    return URL.createObjectURL(file);
+                                }
+                            }}
+                            dragDropEnabled
+                        />
+                    </div>
+
+                    {/* Description Editor */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Description Editor</h3>
+                        <TextEditor
+                            preset="description"
+                            placeholder="Enter product description..."
+                            showWordCount
+                            validation={{ minLength: 50 }}
+                        />
+                    </div>
+                </div>
+            </Card>
+
+            {/* Image Upload */}
+            <Card title="Image Upload" subtitle="Drag & drop image upload with multiple modes and features">
+                <div className="space-y-8">
+                    {/* Basic Upload */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Basic Single Image Upload</h3>
+                        <ImageUpload
+                            label="Upload Image"
+                            helperText="Accepts JPG, PNG, WebP up to 5MB"
+                            multiple={false}
+                            accept={['image/jpeg', 'image/png', 'image/webp']}
+                            maxSize={5 * 1024 * 1024}
+                            onUpload={mockUpload}
+                            onChange={(images) => console.log('Single upload:', images)}
+                        />
+                    </div>
+
+                    {/* Multiple Upload */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Multiple Image Upload</h3>
+                        <ImageUpload
+                            label="Upload Multiple Images"
+                            multiple={true}
+                            maxFiles={5}
+                            accept={['image/jpeg', 'image/png', 'image/webp']}
+                            maxSize={5 * 1024 * 1024}
+                            onUpload={mockUpload}
+                            value={galleryImages}
+                            onChange={setGalleryImages}
+                            enableReorder
+                            showFileName
+                            showFileSize
+                            gridColumns={3}
+                        />
+                    </div>
+
+                    {/* Preset: Profile Picture */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Profile Picture Upload (Preset)</h3>
+                        <ImageUpload
+                            preset="profile"
+                            label="Profile Picture"
+                            helperText="Square image recommended (1:1 ratio)"
+                            onUpload={mockUpload}
+                            value={profileImage}
+                            onChange={setProfileImage}
+                        />
+                    </div>
+
+                    {/* Preset: Gallery */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Gallery Upload (Preset)</h3>
+                        <ImageUpload
+                            preset="gallery"
+                            label="Photo Gallery"
+                            helperText="Upload up to 20 images"
+                            onUpload={mockUpload}
+                            onSelect={(files) => toast.info(`Selected ${files.length} files`)}
+                            onSuccess={(id, url) => toast.success(`Image uploaded: ${url}`)}
+                            onError={(id, error) => toast.error(`Upload failed: ${error}`)}
+                        />
+                    </div>
+
+                    {/* Preset: Banner */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Banner Upload (Preset)</h3>
+                        <ImageUpload
+                            preset="banner"
+                            label="Banner Image"
+                            helperText="Recommended size: 1920x1080 (16:9 ratio)"
+                            onUpload={mockUpload}
+                            value={bannerImage}
+                            onChange={setBannerImage}
+                        />
+                    </div>
+
+                    {/* Preset: Product Images */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Product Images (Preset)</h3>
+                        <ImageUpload
+                            preset="product"
+                            label="Product Images"
+                            helperText="Upload up to 10 product images"
+                            onUpload={mockUpload}
+                            value={productImages}
+                            onChange={setProductImages}
+                            enableReorder
+                            onReorder={(images) => toast.info('Images reordered')}
+                        />
+                    </div>
+
+                    {/* Manual Upload Mode */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Manual Upload Mode</h3>
+                        <p className="text-sm text-gray-600">Select files first, then click "Upload All" button</p>
+                        <ImageUpload
+                            label="Select Files"
+                            multiple={true}
+                            maxFiles={3}
+                            uploadMode="manual"
+                            onUpload={mockUpload}
+                            onUploadStart={(file) => toast.info(`Uploading ${file.name}...`)}
+                            onSuccess={(id, url) => toast.success('Upload complete!')}
+                        />
+                    </div>
+
+                    {/* With Camera Support (Mobile) */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">With Camera Capture</h3>
+                        <ImageUpload
+                            label="Take Photo or Upload"
+                            enableCamera={true}
+                            onUpload={mockUpload}
+                            helperText="Use camera button to take a photo"
+                        />
+                    </div>
+
+                    {/* With Validation */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">With Dimension Validation</h3>
+                        <ImageUpload
+                            label="Upload (Min 800x600)"
+                            imageDimensions={{
+                                minWidth: 800,
+                                minHeight: 600,
+                            }}
+                            validationMode="hard"
+                            onUpload={mockUpload}
+                            helperText="Image must be at least 800x600 pixels"
+                        />
+                    </div>
+
+                    {/* Paste Support */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Paste Image Support</h3>
+                        <p className="text-sm text-gray-600">Copy an image and paste it (Ctrl+V / Cmd+V)</p>
+                        <ImageUpload
+                            label="Paste Image Here"
+                            enablePaste={true}
+                            onUpload={mockUpload}
+                            placeholder="Click or paste image from clipboard"
+                        />
+                    </div>
+
+                    {/* Small Preview Size */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Different Preview Sizes</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <p className="text-sm text-gray-600 mb-2">Small</p>
+                                <ImageUpload
+                                    previewSize="sm"
+                                    multiple={true}
+                                    maxFiles={3}
+                                    onUpload={mockUpload}
+                                />
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-600 mb-2">Medium (Default)</p>
+                                <ImageUpload
+                                    previewSize="md"
+                                    multiple={true}
+                                    maxFiles={3}
+                                    onUpload={mockUpload}
+                                />
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-600 mb-2">Large</p>
+                                <ImageUpload
+                                    previewSize="lg"
+                                    multiple={true}
+                                    maxFiles={3}
+                                    onUpload={mockUpload}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* States */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Component States</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Disabled</label>
+                                <ImageUpload
+                                    disabled
+                                    placeholder="Upload disabled"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Read Only</label>
+                                <ImageUpload
+                                    readOnly
+                                    value={[{
+                                        id: '1',
+                                        file: new File([], 'readonly.jpg'),
+                                        preview: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400',
+                                        name: 'readonly.jpg',
+                                        size: 102400,
+                                        type: 'image/jpeg',
+                                        progress: 100,
+                                        status: 'success'
+                                    }]}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">With Error</label>
+                                <ImageUpload
+                                    error="Upload failed. Please try again."
+                                    placeholder="Upload with error state"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Loading</label>
+                                <ImageUpload
+                                    loading
+                                    placeholder="Loading state"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Custom Validator */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Custom Validation</h3>
+                        <ImageUpload
+                            label="Custom Validator (File name must contain 'product')"
+                            customValidator={async (file) => {
+                                if (!file.name.toLowerCase().includes('product')) {
+                                    return 'File name must contain "product"';
+                                }
+                                return null;
+                            }}
+                            validationMode="soft"
+                            onUpload={mockUpload}
+                            helperText="Try uploading files with different names"
+                        />
+                    </div>
+
+                    {/* No Drag & Drop */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Click Only (No Drag & Drop)</h3>
+                        <ImageUpload
+                            label="Click to Upload"
+                            enableDragDrop={false}
+                            onUpload={mockUpload}
+                            placeholder="Click to select image"
+                        />
+                    </div>
+
+                    {/* Grid Columns */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Different Grid Layouts</h3>
+                        <div className="space-y-4">
+                            <div>
+                                <p className="text-sm text-gray-600 mb-2">2 Columns</p>
+                                <ImageUpload
+                                    multiple={true}
+                                    maxFiles={4}
+                                    gridColumns={2}
+                                    onUpload={mockUpload}
+                                />
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-600 mb-2">6 Columns</p>
+                                <ImageUpload
+                                    multiple={true}
+                                    maxFiles={6}
+                                    gridColumns={6}
+                                    previewSize="sm"
+                                    onUpload={mockUpload}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Event Callbacks */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700">Event Callbacks</h3>
+                        <ImageUpload
+                            label="Upload with Events"
+                            multiple={true}
+                            maxFiles={3}
+                            onUpload={mockUpload}
+                            onSelect={(files) => {
+                                toast.info(`Selected: ${files.map(f => f.name).join(', ')}`);
+                            }}
+                            onUploadStart={(file) => {
+                                toast.info(`Uploading: ${file.name}`);
+                            }}
+                            onSuccess={(id, url) => {
+                                toast.success(`Success! URL: ${url.substring(0, 50)}...`);
+                            }}
+                            onError={(id, error) => {
+                                toast.error(`Error: ${error}`);
+                            }}
+                            onRemove={(id) => {
+                                toast.info('Image removed');
+                            }}
+                            onReorder={(images) => {
+                                toast.info(`Reordered: ${images.length} images`);
+                            }}
+                            enableReorder
+                        />
                     </div>
                 </div>
             </Card>

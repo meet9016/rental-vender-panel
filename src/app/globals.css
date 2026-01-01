@@ -90,3 +90,24 @@ body {
     transform: translateX(-100%);
   }
 }
+
+/* text editor css */
+
+/* ContentEditable Placeholder */
+[contenteditable="true"]:empty:before {
+  content: attr(data-placeholder);
+  color: #9ca3af; /* gray-400 */
+  pointer-events: none;
+}
+
+/* Focused */
+[contenteditable="true"]:focus:empty:before {
+  color: #d1d5db; /* gray-300 */
+}
+
+/* Disabled */
+[contenteditable="true"][disabled]:empty:before,
+[contenteditable="true"].cursor-not-allowed:empty:before {
+  color: #9ca3af;
+}
+
