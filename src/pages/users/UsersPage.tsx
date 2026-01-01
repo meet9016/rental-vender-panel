@@ -1,47 +1,78 @@
-// "use client";
+"use client";
 
-// import { useEffect, useState } from "react";
-// import { getUsers } from "@/services/user.service";
+import { useState } from "react";
+import Stepper from "./Stepper";
+import StepPersonal from "./steps/StepPersonal";
+import StepContact from "./steps/StepContact";
+import StepIdentity from "./steps/StepIdentity";
+import StepBankDetails from "./steps/StepBankDetails";
+import StepDocument from "./steps/StepDocument";
+import StepDeclaration from "./steps/StepDeclaration";
 
-// type User = {
-//   id: number;
-//   name: string;
-// };
+const steps = [
+  "Personal Info",
+  "Contact Details",
+  "Identity",
+  "Bank",
+  "Documents",
+  "Declaration",
+];
 
-// export default function UsersPage() {
-//   const [users, setUsers] = useState<User[]>([]);
-// console.log("users",users);
+export default function KYCPage() {
+  const [currentStep, setCurrentStep] = useState(0);
 
-//   useEffect(() => {
-//     getUsers().then(setUsers);
-//   }, []);
-
-//   return (
-//     <div className="bg-white p-4 rounded shadow">
-//       <h2 className="text-xl font-semibold mb-2">Users</h2>
-
-//       {users.length === 0 ? (
-//         <p>No users found</p>
-//       ) : (
-//         <ul className="space-y-1">
-//           {users.map((user) => (
-//             <li key={user.id} className="border p-2 rounded">
-//               {user.name}
-//             </li>
-//           ))}
-//         </ul>
-//       )}
-//     </div>
-//   );
-// }
-
-export default function UsersPage() {
   return (
-    <div className="bg-white p-4 rounded shadow">
-      <h2 className="text-xl font-semibold">Users</h2>
-      <p className="text-gray-600 mt-2">
-        Users page UI component
-      </p>
+    <div className="min-h-screen bg-gray-100 py-10">
+      <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+        <h1 className="text-2xl font-bold mb-2">KYC Verification</h1>
+        <p className="text-gray-500 mb-8">
+          Complete your KYC in a few simple steps
+        </p>
+
+        <Stepper steps={steps} currentStep={currentStep} />
+
+        <div className="mt-10">
+          {currentStep === 0 && <StepPersonal />}
+          {currentStep === 1 && <StepContact />}
+          {currentStep === 2 && <StepIdentity />}
+          {currentStep === 3 && <StepBankDetails />}
+          {currentStep === 4 && <StepDocument />}
+          {currentStep === 5 && <StepDeclaration />}
+        </div>
+
+        {/* Footer Buttons */}
+        <div className="mt-12 flex items-center justify-between pt-6">
+          {/* Back Button */}
+          <div>
+            {currentStep > 0 && (
+              <button
+                type="button"
+                onClick={() => setCurrentStep((s) => s - 1)}
+                className="px-6 py-2 rounded-lg border border-gray-300
+                   text-gray-700 hover:bg-gray-100 transition"
+              >
+                Back
+              </button>
+            )}
+          </div>
+
+          {/* Next / Submit Button */}
+          <div>
+            <button
+              type="button"
+              onClick={() =>
+                currentStep === steps.length - 1
+                  ? alert("KYC Submitted")
+                  : setCurrentStep((s) => s + 1)
+              }
+              className="px-8 py-2 rounded-lg bg-blue-600 text-white
+                 hover:bg-blue-700 transition font-medium"
+            >
+              {currentStep === steps.length - 1 ? "Submit KYC" : "Next"}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
