@@ -12,13 +12,14 @@ export type AspectRatio = '1:1' | '16:9' | '4:3' | '3:2' | '21:9' | 'free';
 export type OutputFormat = 'file' | 'base64' | 'url';
 
 export interface ImageDimensions {
-    width: number;
-    height: number;
+    width?: number;      // ✅ optional
+    height?: number;     // ✅ optional
     minWidth?: number;
     maxWidth?: number;
     minHeight?: number;
     maxHeight?: number;
 }
+
 
 export interface UploadedImage {
     id: string;

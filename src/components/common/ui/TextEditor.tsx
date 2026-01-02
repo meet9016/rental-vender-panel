@@ -182,7 +182,10 @@ const htmlToMarkdown = (html: string): string => {
     md = md.replace(/<li>(.*?)<\/li>/gi, '- $1\n');
     md = md.replace(/<\/?[uo]l>/gi, '\n');
     md = md.replace(/<code>(.*?)<\/code>/gi, '`$1`');
-    md = md.replace(/<pre><code>(.*?)<\/code><\/pre>/gis, '```\n$1\n```\n');
+    md = md.replace(
+        /<pre><code>([\s\S]*?)<\/code><\/pre>/gi,
+        '```\n$1\n```\n'
+    );
     md = md.replace(/<\/p>/gi, '\n\n');
     md = md.replace(/<br\s*\/?>/gi, '\n');
     md = md.replace(/<[^>]+>/g, '');

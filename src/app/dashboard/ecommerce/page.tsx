@@ -299,10 +299,14 @@ export default function ComponentsDemo() {
             <Card title="Select Variants" subtitle="Dropdown select with features">
                 <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Select label="Basic Select" options={selectOptions} value={selectValue} onChange={setSelectValue} placeholder="Select..." />
-                        <Select label="With Icons" options={roleOptions} placeholder="Select role" />
-                        <Select label="Searchable" options={countryOptions} searchable searchPlaceholder="Search..." placeholder="Select country" />
-                        <Select label="Multi-Select" options={permissionOptions} multiple value={multiSelectValue} onChange={setMultiSelectValue} placeholder="Select multiple" />
+                        <Select label="Basic Select" options={selectOptions} value={selectValue} onChange={setSelectValue} />
+
+                        <Select label="With Icons" options={roleOptions} />
+
+                        <Select label="Searchable" options={countryOptions} searchable />
+
+                        <Select label="Multi-Select" options={permissionOptions} multiple value={multiSelectValue} onChange={setMultiSelectValue} />
+
                     </div>
                 </div>
             </Card>

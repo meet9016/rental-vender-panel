@@ -91,7 +91,6 @@ const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, CommonInputProp
             // Standard props
             className = "",
             id,
-            type = "text",
             value,
             onChange,
             ...restProps
@@ -99,14 +98,22 @@ const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, CommonInputProp
 
         const [showPassword, setShowPassword] = useState(false);
         const [internalValue, setInternalValue] = useState(value || "");
+        const inputType =
+            !multiline && "type" in props
+                ? props.type ?? "text"
+                : undefined;
 
         // Generate ID from label if not provided
         const inputId = id || label?.toLowerCase().replace(/\s+/g, "-");
 
         // Determine actual type
-        const actualType = showPasswordToggle && type === "password"
-            ? (showPassword ? "text" : "password")
-            : type;
+        const actualType =
+            showPasswordToggle && inputType === "password"
+                ? showPassword
+                    ? "text"
+                    : "password"
+                : inputType;
+
 
         // Base styles
         const baseStyles =
@@ -172,9 +179,12 @@ const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, CommonInputProp
         };
 
         // Handle internal value change
-        const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const handleChange = (
+            e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+        ) => {
             setInternalValue(e.target.value);
-            if (type === "number" && (onlyNumbers || preventNegative)) {
+
+            if (inputType === "number" && (onlyNumbers || preventNegative)) {
                 handleNumberInput(e as React.ChangeEvent<HTMLInputElement>);
             } else if (onChange) {
                 onChange(e as any);

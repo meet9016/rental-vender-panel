@@ -21,98 +21,96 @@ type SelectVariant = "default" | "error" | "success";
 type SelectSize = "sm" | "md" | "lg";
 type DropdownPosition = "top" | "bottom" | "auto";
 
-interface CommonSelectProps {
-    // Basic
+interface BaseSelectProps {
     label?: string;
     options: SelectOption[] | SelectGroupOption[];
-    value?: string | string[];
-    onChange: (value: string | string[]) => void;
     placeholder?: string;
     name?: string;
     id?: string;
     required?: boolean;
-
-    // Styling
     variant?: SelectVariant;
     size?: SelectSize;
     fullWidth?: boolean;
     className?: string;
-
-    // States
     disabled?: boolean;
     error?: boolean;
     errorMessage?: string;
     helperText?: string;
-
-    // Multi-select
-    multiple?: boolean;
-    maxSelection?: number;
-
-    // Searchable
     searchable?: boolean;
     searchPlaceholder?: string;
     onSearch?: (query: string) => void;
     noOptionsText?: string;
-
-    // Async/Loading
     isLoading?: boolean;
     loadOptions?: (search: string) => Promise<SelectOption[]>;
-
-    // Clearable
     clearable?: boolean;
-
-    // Behavior
     openOnFocus?: boolean;
     closeOnSelect?: boolean;
     maxMenuHeight?: number;
     dropdownPosition?: DropdownPosition;
-
-    // Custom Rendering
     renderOption?: (option: SelectOption) => ReactNode;
-
-    // Accessibility
     ariaLabel?: string;
 }
 
-export default function Select({
-    label,
-    options = [],
-    value,
-    onChange,
-    placeholder = "Select an option",
-    name,
-    id,
-    required = false,
-    variant = "default",
-    size = "md",
-    fullWidth = true,
-    className = "",
-    disabled = false,
-    error = false,
-    errorMessage,
-    helperText,
-    multiple = false,
-    maxSelection,
-    searchable = false,
-    searchPlaceholder = "Search...",
-    onSearch,
-    noOptionsText = "No options found",
-    isLoading = false,
-    loadOptions,
-    clearable = false,
-    openOnFocus = false,
-    closeOnSelect = true,
-    maxMenuHeight = 300,
-    dropdownPosition = "auto",
-    renderOption,
-    ariaLabel,
-}: CommonSelectProps) {
+interface SingleSelectProps extends BaseSelectProps {
+    multiple?: false | undefined;   // ✅ critical
+    value?: string;
+    onChange?: (value: string) => void;
+}
+
+interface MultiSelectProps extends BaseSelectProps {
+    multiple: true;                 // ✅ hard discriminator
+    value?: string[];
+    onChange?: (value: string[]) => void;
+    maxSelection?: number;
+}
+
+
+type SelectProps = SingleSelectProps | MultiSelectProps;
+
+export default function Select(props: SelectProps) {
+    const {
+        label,
+        options = [],
+        value,
+        onChange,
+        placeholder = "Select an option",
+        name,
+        id,
+        required = false,
+        variant = "default",
+        size = "md",
+        fullWidth = true,
+        className = "",
+        disabled = false,
+        error = false,
+        errorMessage,
+        helperText,
+        multiple = false,
+        searchable = false,
+        searchPlaceholder = "Search...",
+        onSearch,
+        noOptionsText = "No options found",
+        isLoading = false,
+        loadOptions,
+        clearable = false,
+        openOnFocus = false,
+        closeOnSelect = true,
+        maxMenuHeight = 300,
+        dropdownPosition = "auto",
+        renderOption,
+        ariaLabel,
+    } = props;
+
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredOptions, setFilteredOptions] = useState<SelectOption[]>([]);
     const [highlightedIndex, setHighlightedIndex] = useState(0);
     const selectRef = useRef<HTMLDivElement>(null);
     const searchInputRef = useRef<HTMLInputElement>(null);
+
+    const maxSelection =
+        multiple && "maxSelection" in props ? props.maxSelection : undefined;
+
 
     const selectId = id || label?.toLowerCase().replace(/\s+/g, "-");
 
@@ -126,9 +124,14 @@ export default function Select({
     }, [options]);
 
     // Get selected values as array
-    const selectedValues = multiple
-        ? (Array.isArray(value) ? value : value ? [value] : [])
-        : (value ? [value] : []);
+    const selectedValues: string[] = useMemo(() => {
+        if (multiple) {
+            return Array.isArray(value) ? value : [];
+        }
+        return typeof value === "string" ? [value] : [];
+    }, [value, multiple]);
+
+
 
     // Get selected options
     const selectedOptions = normalizedOptions.filter(opt =>
@@ -192,6 +195,8 @@ export default function Select({
 
     // Handle selection
     const handleSelect = (optionValue: string) => {
+        if (!onChange) return; // ✅ safety
+
         if (multiple) {
             const newValues = selectedValues.includes(optionValue)
                 ? selectedValues.filter(v => v !== optionValue)
@@ -199,13 +204,22 @@ export default function Select({
                     ? selectedValues
                     : [...selectedValues, optionValue];
 
-            onChange(newValues);
-
-            if (!closeOnSelect) {
-                return;
+            if (multiple) {
+                (onChange as (v: string[]) => void)?.(newValues);
+            } else {
+                (onChange as (v: string) => void)?.(optionValue);
             }
         } else {
-            onChange(optionValue);
+            const newValues = selectedValues.includes(optionValue)
+                ? selectedValues.filter(v => v !== optionValue)
+                : maxSelection && selectedValues.length >= maxSelection
+                    ? selectedValues
+                    : [...selectedValues, optionValue];
+            if (multiple) {
+                (onChange as (v: string[]) => void)?.(newValues);
+            } else {
+                (onChange as (v: string) => void)?.(optionValue);
+            }
         }
 
         if (closeOnSelect) {
@@ -214,19 +228,29 @@ export default function Select({
         }
     };
 
+
     // Handle clear
     const handleClear = (e: React.MouseEvent) => {
         e.stopPropagation();
-        onChange(multiple ? [] : "");
+        if (!onChange) return;
+
+        if (multiple) {
+            onChange([] as any);
+        } else {
+            onChange("" as any);
+        }
     };
+
+
 
     // Remove single value in multi-select
     const handleRemoveValue = (valueToRemove: string, e: React.MouseEvent) => {
         e.stopPropagation();
-        if (multiple) {
-            onChange(selectedValues.filter(v => v !== valueToRemove));
-        }
+        if (!multiple || !onChange) return;
+
+        onChange(selectedValues.filter(v => v !== valueToRemove) as any);
     };
+
 
     // Keyboard navigation
     const handleKeyDown = (e: React.KeyboardEvent) => {
