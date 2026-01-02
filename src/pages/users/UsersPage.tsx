@@ -10,7 +10,6 @@ import StepDocument from "./steps/StepDocument";
 import StepDeclaration from "./steps/StepDeclaration";
 
 const steps = [
-  "Personal Info",
   "Contact Details",
   "Identity",
   "Bank",
@@ -32,12 +31,12 @@ export default function KYCPage() {
         <Stepper steps={steps} currentStep={currentStep} />
 
         <div className="mt-10">
-          {currentStep === 0 && <StepPersonal />}
-          {currentStep === 1 && <StepContact />}
-          {currentStep === 2 && <StepIdentity />}
-          {currentStep === 3 && <StepBankDetails />}
-          {currentStep === 4 && <StepDocument />}
-          {currentStep === 5 && <StepDeclaration />}
+          {/* {currentStep === 0 && <StepPersonal />} */}
+          {currentStep === 0 && <StepContact />}
+          {currentStep === 1 && <StepIdentity />}
+          {currentStep === 2 && <StepBankDetails />}
+          {currentStep === 3 && <StepDocument />}
+          {currentStep === 4 && <StepDeclaration />}
         </div>
 
         {/* Footer Buttons */}

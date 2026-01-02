@@ -13,7 +13,6 @@ export default function StepIdentity() {
         {/* Left Column */}
         <div className="space-y-4">
           <Input label="PAN Number" placeholder="Enter pan number" />
-          <Input label="Aadhaar Linked Mobile" placeholder="Enter aadhaar linked mobile" />
           <Input label="Business Name" placeholder="Enter business name" />
         </div>
 

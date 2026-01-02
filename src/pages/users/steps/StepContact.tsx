@@ -21,20 +21,14 @@ export default function StepContact() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Left Column */}
         <div className="space-y-4">
+          <Input label="Full Name" placeholder="Enter your full name" />
           <Input label="Mobile Number" placeholder="Enter your mobile number" />
           <Input
             label="Address Line 1"
             placeholder="Enter your address line 1"
           />
-          <Select
-            label="City"
-            options={selectOptions}
-            value=""
-            onChange={() => {}}
-            placeholder="Select..."
-          />
-          <Select
-            label="Country"
+        <Select
+            label="State"
             options={selectOptions}
             value=""
             onChange={() => {}}
@@ -49,8 +43,15 @@ export default function StepContact() {
             label="Address Line 2"
             placeholder="Enter your address line 2"
           />
-<Select
-            label="State"
+           <Select
+            label="City"
+            options={selectOptions}
+            value=""
+            onChange={() => {}}
+            placeholder="Select..."
+          />
+            <Select
+            label="Country"
             options={selectOptions}
             value=""
             onChange={() => {}}

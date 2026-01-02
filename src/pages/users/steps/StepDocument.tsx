@@ -21,10 +21,6 @@ export default function StepDocument() {
         {/* Right Column */}
         <div className="space-y-4">
           <Input label="Aadhaar Card (Back)" placeholder="Aadhaar Card (Back)" />
-          <Input
-            label="Live Selfie"
-            placeholder="Live Selfie"
-          />
           {/* Add more fields here if needed */}
         </div>
       </div>
