@@ -1,9 +1,12 @@
 type Props = {
-  steps: string[];
+  steps?: string[];
   currentStep: number;
 };
 
-export default function Stepper({ steps, currentStep }: Props) {
+export default function Stepper({
+  steps = [],
+  currentStep,
+}: Props) {
   return (
     <div className="relative flex justify-between items-start w-full">
       {steps.map((label, index) => {
