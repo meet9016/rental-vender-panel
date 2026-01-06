@@ -39,6 +39,9 @@ export { default as TextEditor } from "./TextEditor";
 
 export { default as ImageUpload } from "./ImageUpload";
 
+export { default as TagInput } from "./TagInput";
+
+
 
 // Table
 // export { default as Table } from "./Table";
