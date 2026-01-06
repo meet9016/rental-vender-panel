@@ -28,6 +28,11 @@ const menu: NavItem[] = [
     path: "/users",
   },
   {
+    name: "Product",
+    icon: FaUsers,
+    path: "/product",
+  },
+  {
     name: "Reports",
     icon: FaChartLine,
     path: "/reports/sales", // Main path for when sidebar is collapsed
