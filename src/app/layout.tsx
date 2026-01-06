@@ -2,6 +2,9 @@
 import { LayoutProvider } from "@/components/providers/LayoutProvider";
 import { ToastProvider } from "@/components/common/ui"; // Direct import
 import { Geist, Geist_Mono } from "next/font/google";
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
+
 import type { Metadata } from "next";
 import "./globals.css";
 import LayoutClient from "./layout-client";
