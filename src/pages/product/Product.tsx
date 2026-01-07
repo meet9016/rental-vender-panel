@@ -7,7 +7,7 @@ import { ModuleRegistry } from 'ag-grid-community';
 import { ClientSideRowModelModule } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
-import { Search, Plus, ChevronDown } from 'lucide-react';
+import { Search, Plus, ChevronDown, Filter } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/common/ui/Button';
 import Input from '@/components/common/ui/Input';
@@ -209,19 +209,19 @@ export default function ProductListPage() {
 
   // Action Cell Renderer
   const ActionCellRenderer = useCallback((props: any) => {
-    const [showDropdown, setShowDropdown] = useState(false);
-
     return (
       <div className="flex items-center justify-center h-full">
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={(e) => {
             e.stopPropagation();
             router.push(`/product/${props.data.id}`);
           }}
-          className="px-4 py-1.5 text-sm text-blue-600 hover:bg-blue-50 rounded transition-colors"
+          className="text-blue-600 hover:bg-blue-50"
         >
           View Details
-        </button>
+        </Button>
       </div>
     );
   }, [router]);
@@ -353,13 +353,13 @@ export default function ProductListPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-[1400px] mx-auto px-6">
-        {/* Stats Cards */}
+        {/* Stats Cards - Using StatCard component */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <StatCard
             title="Total Menu"
             value={stats.totalMenu}
             subtitle="Menu items month"
-            trend={{ value: '↑ 30%', type: 'increase', comparison: 'This month', showIcon: false }}
+            trend={{ value: '30%', type: 'increase', comparison: 'This month', showIcon: true }}
             variant="primary"
             style="light"
           />
@@ -367,7 +367,7 @@ export default function ProductListPage() {
             title="Item Sales"
             value={stats.itemSales}
             subtitle="This month"
-            trend={{ value: '↑ 20%', type: 'increase', comparison: 'This month', showIcon: false }}
+            trend={{ value: '20%', type: 'increase', comparison: 'This month', showIcon: true }}
             variant="primary"
             style="light"
           />
@@ -375,7 +375,7 @@ export default function ProductListPage() {
             title="Stock Items"
             value={stats.stockItems}
             subtitle="This month"
-            trend={{ value: '↑ 25.4%', type: 'increase', comparison: 'This month', showIcon: false }}
+            trend={{ value: '25.4%', type: 'increase', comparison: 'This month', showIcon: true }}
             variant="primary"
             style="light"
           />
@@ -383,7 +383,7 @@ export default function ProductListPage() {
             title="Out of Stock"
             value={stats.outOfStock}
             subtitle="This month"
-            trend={{ value: '↓ 5.6%', type: 'decrease', comparison: 'This month', showIcon: false }}
+            trend={{ value: '5.6%', type: 'decrease', comparison: 'This month', showIcon: true }}
             variant="danger"
             style="light"
           />
@@ -391,38 +391,55 @@ export default function ProductListPage() {
 
         {/* Main Content */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          {/* Header */}
+          {/* Header - Using Button and Input components */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-6 border-b border-gray-200">
-            <div className="relative w-full sm:w-auto sm:min-w-[300px]">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
-              <input
+            {/* Search Input using Input component */}
+            <div className="w-full sm:w-auto sm:min-w-[300px]">
+              <Input
                 type="text"
                 placeholder="Search by name, item ID..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                isSearch
+                leftIcon={<Search size={18} />}
+                fullWidth
               />
             </div>
 
+            {/* Action Buttons */}
             <div className="flex flex-wrap items-center gap-3">
-              <button className="flex items-center gap-2 px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                <span>All Status</span>
-                <ChevronDown size={16} className="text-gray-500" />
-              </button>
-              <button className="flex items-center gap-2 px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                <span>01 May 2025 - 10 Jun</span>
-                <ChevronDown size={16} className="text-gray-500" />
-              </button>
-              <button className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                More Filters
-              </button>
-              <button
-                onClick={() => router.push('/product/add-product')}
-                className="flex items-center gap-2 px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-teal-600 transition-colors"
+              <Button
+                variant="outline"
+                size="md"
+                rightIcon={<ChevronDown size={16} />}
               >
-                <Plus size={16} />
-                Add New 
-              </button>
+                All Status
+              </Button>
+
+              <Button
+                variant="outline"
+                size="md"
+                rightIcon={<ChevronDown size={16} />}
+              >
+                01 May 2025 - 10 Jun
+              </Button>
+
+              <Button
+                variant="outline"
+                size="md"
+                leftIcon={<Filter size={16} />}
+              >
+                More Filters
+              </Button>
+
+              <Button
+                variant="primary"
+                size="md"
+                leftIcon={<Plus size={16} />}
+                onClick={() => router.push('/product/add-product')}
+              >
+                Add New
+              </Button>
             </div>
           </div>
 
@@ -485,7 +502,7 @@ export default function ProductListPage() {
             </div>
           </div>
 
-          {/* Pagination */}
+          {/* Pagination - Using Pagination component */}
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
@@ -496,10 +513,14 @@ export default function ProductListPage() {
               setPageSize(size);
               setCurrentPage(1);
             }}
-            showFirstLastButtons={false}
+            showFirstLastButtons={true}
             showPageInput={true}
-            showRangeInfo={false}
+            showRangeInfo={true}
             mode="full"
+            variant="primary"
+            size="regular"
+            pageSizeOptions={[10, 25, 50, 100]}
+            showPageSizeSelector={true}
           />
         </div>
       </div>

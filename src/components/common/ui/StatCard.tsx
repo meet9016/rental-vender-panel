@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import { LucideIcon, TrendingUp, TrendingDown, Info, RefreshCw, AlertCircle } from 'lucide-react';
+import { LucideIcon, TrendingUp, TrendingDown, Info, RefreshCw, AlertCircle, } from 'lucide-react';
 
 /* ================= TYPES ================= */
 
@@ -19,7 +19,7 @@ interface TrendConfig {
     showIcon?: boolean;
 }
 
-interface AlertConfig {
+interface AlertBadgeConfig {
     show: boolean;
     type?: 'warning' | 'error' | 'info';
     message?: string;
@@ -65,7 +65,7 @@ export interface StatCardProps {
     progress?: ProgressConfig;
 
     // Alert/Status
-    alert?: AlertConfig;
+    alertBadge?: AlertBadgeConfig;
     badge?: string; // Small badge text
 
     // Time Context
@@ -202,7 +202,7 @@ const StatCard: React.FC<StatCardProps> = ({
 
     trend,
     progress,
-    alert,
+    alertBadge,
     badge,
 
     timeContext,
@@ -329,21 +329,21 @@ const StatCard: React.FC<StatCardProps> = ({
             style={customColor ? { borderColor: customColor } : undefined}
         >
             {/* Alert Badge */}
-            {alert?.show && (
+            {alertBadge?.show && (
                 <div className="flex items-center gap-2 mb-3">
                     <span
-                        className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${alert.type === 'warning'
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : alert.type === 'error'
-                                    ? 'bg-red-100 text-red-800'
-                                    : 'bg-blue-100 text-blue-800'
+                        className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${alertBadge.type === 'warning'
+                            ? 'bg-yellow-100 text-yellow-800'
+                            : alertBadge.type === 'error'
+                                ? 'bg-red-100 text-red-800'
+                                : 'bg-blue-100 text-blue-800'
                             }`}
                     >
-                        {alert.pulse && (
-                            <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${alert.type === 'warning' ? 'bg-yellow-600' : 'bg-red-600'
+                        {alertBadge.pulse && (
+                            <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${alertBadge.type === 'warning' ? 'bg-yellow-600' : 'bg-red-600'
                                 }`}></span>
                         )}
-                        {alert.message}
+                        {alertBadge.message}
                     </span>
                 </div>
             )}
@@ -364,7 +364,7 @@ const StatCard: React.FC<StatCardProps> = ({
                                 title={infoTooltip}
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    alert(infoTooltip);
+                                    window.alert(infoTooltip);
                                 }}
                             >
                                 <Info size={14} />
