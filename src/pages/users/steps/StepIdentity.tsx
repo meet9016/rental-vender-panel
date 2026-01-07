@@ -8,27 +8,38 @@ const selectOptions: SelectOption[] = [
 
 export default function StepIdentity() {
   return (
-    <>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Left Column */}
-        <div className="space-y-4">
-          <Input label="PAN Number" placeholder="Enter pan number" />
-          <Input label="Business Name" placeholder="Enter business name" />
-        </div>
+    <div className="w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
 
-        {/* Right Column */}
-        <div className="space-y-4">
-          <Input
-            label="Aadhaar Number"
-            placeholder="Enter aadhaar number"
-          />
-          <Input
-            label="GST Number"
-            placeholder="Enter gst number"
-          />
-          {/* Add more fields here if needed */}
-        </div>
+        {/* PAN Number */}
+        <Input
+          label="PAN Number"
+          placeholder="Enter PAN number"
+          className="w-full"
+        />
+
+        {/* Aadhaar Number */}
+        <Input
+          label="Aadhaar Number"
+          placeholder="Enter Aadhaar number"
+          className="w-full"
+        />
+
+        {/* Business Name */}
+        <Input
+          label="Business Name"
+          placeholder="Enter business name"
+          className="w-full"
+        />
+
+        {/* GST Number */}
+        <Input
+          label="GST Number"
+          placeholder="Enter GST number"
+          className="w-full"
+        />
+
       </div>
-    </>
+    </div>
   );
 }
